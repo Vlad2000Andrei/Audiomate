@@ -64,7 +64,7 @@ class UserOptions:
 
     def prompt_bar_count(self):
         self.print_separator()
-        self.bar_count = self.get_int("Please enter the number of animated bars you want. (default is 30): ", 1, int(self.width / 3))
+        self.bar_count = self.get_int("Please enter the number of animated bars you want. (default is 30): ", 1, 1000)
 
     def prompt_spacing(self):
         self.print_separator()
