@@ -20,11 +20,5 @@ echo Python installed! Installing required modules...
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade numpy scipy moviepy matplotlib Pillow
 
-echo .
-echo .
-echo ------------------------------------------------
-echo Installation successful! Press any key to exit.
-echo ------------------------------------------------
-
 :finished
 pause
