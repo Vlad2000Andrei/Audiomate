@@ -1,4 +1,5 @@
 from moviepy.editor import ImageSequenceClip, AudioFileClip, concatenate_videoclips, VideoFileClip
+from os import remove
 
 class RenderGroup:
 
@@ -26,20 +27,26 @@ class RenderGroup:
         self.segments.append(filename)
 
     def finalize(self, audio_file):
-        if not len(self.current_segment_frames) == 0:
-            self.render_current_segment()
-        
-        result = VideoFileClip(self.segments[0], audio=False)
-        self.segments = self.segments[1:]
-        
-        for segment in self.segments:
-            video_seg = VideoFileClip(segment, audio=False)
-            result = concatenate_videoclips((result, video_seg), method="chain")
+        to_delete = self.segments
 
-        audio = AudioFileClip(audio_file)
-        audio.cutout(result.duration, audio.duration)
-        result.audio = audio
-        result.write_videofile("OUPUT.mp4", fps=self.fps)
+        try:
+            if not len(self.current_segment_frames) == 0:
+                self.render_current_segment()
+            
+            result = VideoFileClip(self.segments[0], audio=False)
+            self.segments = self.segments[1:]
+            
+            for segment in self.segments:
+                video_seg = VideoFileClip(segment, audio=False)
+                result = concatenate_videoclips((result, video_seg), method="chain")
+
+            audio = AudioFileClip(audio_file)
+            audio.cutout(result.duration, audio.duration)
+            result.audio = audio
+            result.write_videofile(".\output\AudioMate Animation Output.mp4", fps=self.fps)
+        finally:
+            for file in to_delete:
+                remove(file)
         
 def render_image_sequence(images, fps, music_path):
     video_clip = ImageSequenceClip(images, fps)
