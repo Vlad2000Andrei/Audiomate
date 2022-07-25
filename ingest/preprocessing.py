@@ -39,7 +39,7 @@ def segments_to_ffts(segments, bars, skip_first = 3):
     ffts = np.zeros((len(segments), int(bars/2)))
 
     for i in range(len(segments)):
-        ffts[i] = np.fft.fft(segments[i], bars + (skip_first*2))[(skip_first):int((bars+(skip_first*2))/2)]
+        ffts[i] = np.fft.fft (segments[i], bars + (skip_first*2)) [(skip_first):int((bars+(skip_first*2))/2)]
 
     return ffts
 

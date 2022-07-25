@@ -7,8 +7,8 @@ from video.rendering import RenderGroup
 
 
 PATH = "audio_samples/underwaterbeats_delete.wav"
-HEIGHT = 480
-WIDTH = 640
+HEIGHT = None
+WIDTH = None
 
 def create_canvas(height, width, bgcolor = None, custom_background = None):    
     global HEIGHT
@@ -87,19 +87,25 @@ def create_frames(ffts, fps, smoothing, spacing, bar_color, height = 480, width 
     return render_group
 
 def draw_bars(background, heights, spacing, bar_color):
+    global WIDTH
+    global HEIGHT
+
     drawing = ImageDraw.Draw(background)
     
     bar_count = len(heights)    # The number of bars
     total_spacing = spacing * (bar_count + 1)   # The total width of all the "spacing" in pixels
     total_bar = WIDTH - total_spacing   # the total width of all the bars in pixels
     bar_width = int(total_bar / bar_count)   # the width of each bar in pixels (rounded down)
-    padding_left_right = (total_bar - (bar_width * bar_count)) / 2 # Leftover space from rounding errors to be added before the first and after the last bar
+    padding_left_right = (WIDTH - total_bar - total_spacing) / 2 # Leftover space from rounding errors to be added before the first and after the last bar
+    if padding_left_right < 0:
+        padding_left_right = 0
+
 
     if bar_width == 0:
         print("[ERROR] Too much spacing selected for the width of the frame. No room for bars. Please increase frame width or decrease spacing.")
         exit()
 
-    x_pos = 2*spacing + padding_left_right
+    x_pos = spacing + padding_left_right + (bar_width / 2)
     y_bottom = HEIGHT
 
     for bar in heights:

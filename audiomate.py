@@ -1,5 +1,6 @@
 from ingest.preprocessing import prepare
 from video.graphics import create_frames
+from os.path import exists
 
 PATH = "input/elektronimia_sky_high.wav"
 BG = "audio_samples/dummy_bg_3.jpg"
@@ -40,6 +41,9 @@ class UserOptions:
         print("Please enter the name of the audio file you would like to process. The audio file must be in the \"input\" folder.")
         ans = input("> File name (including extension):  ")
         self.audio_path = "./input/" + ans.strip()
+        if not exists(self.audio_path):
+            print("[ERROR] File does not exist. Please check file name and try again!")
+            self.prompt_music()
     
     def prompt_background(self):
         self.print_separator()
@@ -49,6 +53,9 @@ class UserOptions:
             print("Please enter the name of the image file you would like to use. The file must be in the \"input\" folder.")
             ans = input("> File name (including extension):  ")
             self.background_path = "./input/" + ans.strip()
+            if not exists(self.background_path):
+                print("[ERROR] File does not exist. Please check file name and try again!")
+                self.prompt_background()
         else:
             self.bg_color = self.get_rgb("Please enter a background color to use. (RGB format) ")
             self.height = self.get_int("Please enter the height of the video (vertical pixels): ", 100, 10000)
@@ -76,12 +83,12 @@ class UserOptions:
     
     def prompt_smoothing(self):
         self.print_separator()
-        self.animation_smoothing = self.get_int("Please enter the amount of smoothing to apply to the animcation.\n Higher numbers make the animation more fluid. Lower numbers make it more chaotic but more responsive to the music.\n Higher framerates might require more smoothing. (Default is 8)", 1, 100)
+        self.animation_smoothing = self.get_int("Please enter the amount of smoothing to apply to the animcation.\n Higher numbers make the animation more fluid. Lower numbers make it more chaotic but more responsive to the music.\n Higher framerates might require more smoothing. (Default is 5)", 1, 20)
 
 
     def get_yes_no(self, text):
         while True:
-            ans = input(text + " [ Y / N ]  ").lower().strip()
+            ans = input("> " + text + " [ Y / N ]  ").lower().strip()
             if ans == 'y':
                 return True
             elif ans == 'n':
@@ -89,14 +96,14 @@ class UserOptions:
             
     def get_rgb(self, text):
         print(text)
-        r = self.get_int("RED ", 0, 255)
-        g = self.get_int("GREEN ", 0, 255)
-        b = self.get_int("BLUE ", 0, 255)
+        r = self.get_int("\tRED ", 0, 255)
+        g = self.get_int("\tGREEN ", 0, 255)
+        b = self.get_int("\tBLUE ", 0, 255)
         return (r,g,b)
 
     def get_int(self, text, min, max):
         while True:
-            ans = input(text + " (a whole number between " + str(min) + " and " + str(max) + ") :  ")
+            ans = input("> " + text + " (a whole number between " + str(min) + " and " + str(max) + ") :  ")
             
             try:
                 ans = int(ans)
