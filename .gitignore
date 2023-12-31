@@ -1,7 +1,9 @@
 input/*
-*/__pycache__
+*__pycache__
 output/*
 *.mp4
 *.png
 *.jpg
-AudioMate*.zip
+*.zip
+*.wav
+
