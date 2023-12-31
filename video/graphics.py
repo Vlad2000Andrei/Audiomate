@@ -10,7 +10,7 @@ PATH = "audio_samples/underwaterbeats_delete.wav"
 HEIGHT = None
 WIDTH = None
 
-def create_canvas(height, width, bgcolor = None, custom_background = None):    
+def create_canvas(height, width, bgcolor = None, custom_background = None) -> np.array:    
     global HEIGHT
     global WIDTH
     
@@ -23,10 +23,12 @@ def create_canvas(height, width, bgcolor = None, custom_background = None):
     else:
         # Open the image
         custom_background = Image.open(custom_background)
+        # Convert to numpy array
+        custom_background = np.array(custom_background)
         
         # Load the size
-        HEIGHT = np.array(custom_background).shape[0]
-        WIDTH = np.array(custom_background).shape[1]
+        HEIGHT = custom_background.shape[0]
+        WIDTH = custom_background.shape[1]
         
         # Log size to console
         print("Custom height: ", HEIGHT, "| Custom width: ", WIDTH)
@@ -61,13 +63,11 @@ def smoothen_heigths(heights, n = 5):
     return result #normalize(result)
 
 
-def create_frames(ffts, fps, smoothing, spacing, bar_color, height = 480, width = 640, custom_background = None, bgcolor = None):
-    ffts = np.array(ffts)
+def create_frames(ffts :np.array, fps, smoothing, spacing, bar_color, height = 480, width = 640, custom_background = None, bgcolor = None):
 
     background = create_canvas(height, width, bgcolor, custom_background)
-    background = np.array(background)
 
-    render_group = RenderGroup(HEIGHT, WIDTH, fps, 4e9)
+    render_group = RenderGroup(HEIGHT, WIDTH, fps, 10e9)
 
     heights = ffts_to_heights(HEIGHT, ffts)
     heights = smoothen_heigths(heights, smoothing)
@@ -80,7 +80,6 @@ def create_frames(ffts, fps, smoothing, spacing, bar_color, height = 480, width 
         draw_bars(frame_background, frame, spacing, bar_color)
         render_group.add_frame(np.array(frame_background))
 
-        #print(int(frame_num / len(heights) * 10000) / 100, "% done")
         print_progress_bar(iteration=frame_num, total=len(heights), decimals=2, prefix="Generating Animation")
         frame_num += 1
     

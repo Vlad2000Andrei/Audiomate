@@ -1,9 +1,10 @@
 from moviepy.editor import ImageSequenceClip, AudioFileClip, concatenate_videoclips, VideoFileClip
 from os import remove, path
+import numpy as np
 
 class RenderGroup:
 
-    def __init__(self, height, width, fps, max_clip_size):
+    def __init__(self, height : int, width : int, fps : int, max_clip_size : int):
         self.fps = fps
         self.segments = []
         self.current_segment_frames = []
